@@ -11,6 +11,7 @@
 |
 */
 
+// /と/recipesにアクセスしたときにindexにとぶ
 Route::get('/', 'RecipesController@index');
 
 // ユーザ登録
@@ -23,4 +24,9 @@ Route::post('login', 'Auth\LoginController@login')->name('login.post');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
 //ユーザー機能
-Route::resource('recipes', 'RecipesController');
+// このグループに書かれたルーティングは必ずログイン認証を確認
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('recipes', 'RecipesController', ['only' => ['show', 'create', 'store', 'update', 'edit', 'delite']]);
+
+});
+Route::resource('recipes', 'RecipesController', ['only' => 'index', 'show']);
