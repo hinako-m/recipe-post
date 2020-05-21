@@ -12,7 +12,7 @@
                     {!! Form::label('title', 'タイトル:') !!}
                     {!! Form::text('title', 'レシピのタイトルを入力してください', ['class' => 'form-control']) !!}
                     {!! Form::label('cooking_time', '調理時間:') !!}
-                    {!! Form::text('cooking_time', 分, ['class' => 'form-control']) !!}
+                    {!! Form::text('cooking_time', '分', ['class' => 'form-control']) !!}
                     {!! Form::label('material', '材料') !!}
                     {!! Form::text('material', '材料の名前をひとつずつ記入してください', ['class' => 'form-control']) !!}
                     {!! Form::label('amount', '分量') !!}
@@ -26,9 +26,7 @@
                 
                 
                 {!! Form::submit('レシピを投稿', ['class' => 'btn btn-primary']) !!}
-        
-            {!! Form::close() !!}
-        </div>
+
     </div>
 
 @endsection

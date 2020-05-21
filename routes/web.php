@@ -25,8 +25,18 @@ Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
 //ユーザー機能
 // このグループに書かれたルーティングは必ずログイン認証を確認
-Route::group(['middleware' => ['auth']], function () {
-    Route::resource('recipes', 'RecipesController', ['only' => ['show', 'create', 'store', 'update', 'edit', 'delite']]);
+Route::resource('recipes', 'RecipesController');
 
-});
-Route::resource('recipes', 'RecipesController', ['only' => 'index', 'show']);
+Route::group(['prefix' => 'users/{id}'], function () {
+        // お気に入り一覧へのリンク,お気に入りの数
+        Route::get('favorites', 'UsersController@favorites')->name('users.favorites');
+        
+    });
+    
+    // お気に入りのルーティング
+    Route::group(['prefix' => 'recipes/{id}'], function () {
+        Route::post('favorite', 'UserFavoriteController@store')->name('favorites.favorite');
+        Route::delete('unfavorite', 'UserFavoriteController@destroy')->name('favorites.unfavorite');
+    });
+    
+    Route::resource('recipes', 'RecipesController', ['only' => ['store', 'destroy']]);

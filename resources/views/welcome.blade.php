@@ -9,4 +9,5 @@
             {!! link_to_route('login', 'ログインはこちら', [], ['class' => 'btn btn-link']) !!}
         </div>
     </div>
+    @include('recipes.recipes', ['recipes' => $recipes])
 @endsection

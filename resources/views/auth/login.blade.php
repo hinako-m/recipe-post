@@ -19,7 +19,7 @@
                     {!! Form::password('password', ['class' => 'form-control']) !!}
                 </div>
 
-                {!! Form::submit('ログイン', ['class' => 'btn btn-primary btn-block']) !!}
+                {!! Form::submit('ログイン', ['class' => 'btn btn-info btn-block']) !!}
             {!! Form::close() !!}
 
             <p class="mt-2">はじめての方はこちら {!! link_to_route('signup.get', '新規登録') !!}</p>

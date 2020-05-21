@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-
-<h1>レシピ一覧</h1>
+    @foreach ($recipes as $recipe)
+            <h1>つくったレシピ</h1>
 
 @if (count($recipes) > 0)
         
@@ -22,19 +22,10 @@
                     <td>{{ $recipe->title }}</td>
                     <td>{{ $recipe->cooking_time }}</td>
                     <td>{{ $recipe->cookware }}</td>
-                    
-                    @if (Auth::id() == $recipe->user_id)
-                        {!! Form::open(['route' => ['recipes.destroy', $recipe->id], 'method' => 'delete']) !!}
-                           <td> {!! Form::submit('削除', ['class' => 'btn btn-danger btn-sm']) !!}</td>
-                        {!! Form::close() !!}
-                    @endif
                 </tr>
+                
+                    @if (Auth::id() == $recipe->user_id)
+                        
+                    @endif
             
-                @endforeach
-            </tbody>
-        </table>
-    
-        
-    @endif
-    
-@endsection
+    @endforeach

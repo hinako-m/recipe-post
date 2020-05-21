@@ -21,6 +21,19 @@ class RecipesController extends Controller
         return view('recipes.index', [
             'recipes' => $recipes,
         ]);
+        
+        $data = [];
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $recipes = $user->recipes()->orderBy('created_at', 'desc')->paginate(10);
+            
+            $data = [
+                'user' => $user,
+                'recipes' => $recipes,
+            ];
+        }
+        
+        return view('/', $data);
     }
 
     /**
@@ -47,14 +60,19 @@ class RecipesController extends Controller
     // postでrecipes/にアクセスされた場合の「新規作成処理」
     public function store(Request $request)
     {
-        $recipe = new Recipe;
-        $recipe->title = $request->title;
-        $recipe->cooking_time = $request->cooking_time;
-        $recipe->material = $request->material;
-        $recipe->amount = $request->amount;
-        $recipe->cookware = $request->cookware;
-        $recipe->memo = $request->memo;
-        $recipe->save();
+        $this->validate($request, [
+            'title' => 'required|max:30',
+        ]);
+        
+        $request->user()->recipes()->create([
+            'title' => $request->title,
+            'user_id' => $request->user()->id,
+            'cooking_time' => $request->cooking_time,
+            'cookware' => $request->cookware,
+            'material' => $request->material,
+            'amount' => $request->amount,
+            'memo' => $request->memo
+        ]);
         
         return redirect('/');
     }
@@ -84,6 +102,11 @@ class RecipesController extends Controller
     // getでrecipes/id/editにアクセスされた場合の「更新画面表示処理」
     public function edit($id)
     {
+        if (\Auth::id() === $recipe->user_id) {
+            return redirect('/');
+        }
+        
+            
         $recipe = Recipe::find($id);
         
         return view('recipes.edit', [
@@ -101,7 +124,12 @@ class RecipesController extends Controller
     // putまたはpatchでrecipes/idにアクセスされた場合の「更新処理」
     public function update(Request $request, $id)
     {
-        $recipe = new Recipe;
+        $this->validate($request, [
+            'title' => 'required|max:30',
+        ]);
+        
+        $recipe = Recipe::find($id);
+        $recipe->user_id = $request->user()->id;
         $recipe->title = $request->title;
         $recipe->cooking_time = $request->cooking_time;
         $recipe->material = $request->material;
@@ -123,9 +151,28 @@ class RecipesController extends Controller
     // deleteでrecipes/idにアクセスされた場合の「削除処理」
     public function destroy($id)
     {
-        $recipe = Recipe::find($id);
-        $recipe->delete();
+        $recipe = \App\Recipe::find($id);
+
+        if (\Auth::id() === $recipe->user_id) {
+            $recipe->delete();
+        }
         
         return redirect('/');
     }
+    
+    public function favorites($id)
+    {
+        $user = User::find($id);
+        $favorites = $user->favorites()->paginate(10);
+
+        $data = [
+            'user' => $user,
+            'recipes' => $favorites,
+        ];
+
+        $data += $this->counts($user);
+
+        return view('recipes.favorites', $data);
+    }
+    
 }

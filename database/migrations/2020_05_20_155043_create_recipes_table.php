@@ -15,15 +15,21 @@ class CreateRecipesTable extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
+            $table->integer('user_id')->unsigned()->index();
+            $table->string('title', 30);
             $table->string('cooking_time');
             $table->string('cookware');
             $table->string('material');
             $table->string('amount');
             $table->string('memo');  
             $table->timestamps();
+            
+            // 外部キー制約
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
+    
+            
 
     /**
      * Reverse the migrations.

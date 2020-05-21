@@ -5,14 +5,14 @@
 <h1>レシピを編集</h1>
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-10">
             {!! Form::model($recipe, ['route' => ['recipes.update', $recipe->id], 'method' => 'put']) !!}
         
                 <div class="form-group">
                     {!! Form::label('title', 'タイトル:') !!}
                     {!! Form::text('title', 'レシピのタイトルを入力してください', ['class' => 'form-control']) !!}
                     {!! Form::label('cooking_time', '調理時間:') !!}
-                    {!! Form::text('cooking_time', 分, ['class' => 'form-control']) !!}
+                    {!! Form::text('cooking_time', '分', ['class' => 'form-control']) !!}
                     {!! Form::label('material', '材料') !!}
                     {!! Form::text('material', '材料の名前をひとつずつ記入してください', ['class' => 'form-control']) !!}
                     {!! Form::label('amount', '分量') !!}
@@ -26,9 +26,6 @@
                 </div>
         
                 {!! Form::submit('完了', ['class' => 'btn btn-primary']) !!}
-
-                {!! Form::model($recipe, ['route' => ['recipes.destroy', $recipe->id], 'method' => 'delete']) !!}
-                {!! Form::submit('削除', ['class' => 'btn btn-danger']) !!}
 
             {!! Form::close() !!}
         </div>
