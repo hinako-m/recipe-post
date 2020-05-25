@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRecipeFavariteTable extends Migration
+class CreateRecipeFavoriteTable extends Migration
 {
     /**
      * Run the migrations.
@@ -21,7 +21,7 @@ class CreateRecipeFavariteTable extends Migration
             
             // 外部キー設定
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('recipe_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('recipe_id')->references('id')->on('recipes')->onDelete('cascade');
             
              // user_idとrecipe_idの組み合わせの重複を許さない
             $table->unique(['user_id', 'recipe_id']);

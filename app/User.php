@@ -34,7 +34,7 @@ class User extends Authenticatable
     
     public function favorites()
     {
-        return $this->belongsToMany(Recipe::class, 'recipe_favorites', 'user_id', 'recipe_id')->withTimestamps();
+        return $this->belongsToMany(Recipe::class, 'recipe_favorite', 'user_id', 'recipe_id')->withTimestamps();
     }
     
      public function favorite($recipeId)
@@ -70,10 +70,5 @@ class User extends Authenticatable
     public function add_favorite($recipeId)
     {
         return $this->favorites()->where('recipe_id', $recipeId)->exists();
-    }
-    
-    public function feed_recipes()
-    {
-        
     }
 }

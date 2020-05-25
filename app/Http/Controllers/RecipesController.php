@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\User;
 use App\Recipe;
 
 class RecipesController extends Controller
@@ -16,24 +17,12 @@ class RecipesController extends Controller
      // getでrecipe/にアクセスされた場合の「一覧表示処理」
     public function index()
     {
-        $recipes = Recipe::all();
+        // $recipe = Recipe::all();
         
+        $recipes = Recipe::orderBy('created_at', 'asc')->paginate(10);
         return view('recipes.index', [
             'recipes' => $recipes,
         ]);
-        
-        $data = [];
-        if (\Auth::check()) {
-            $user = \Auth::user();
-            $recipes = $user->recipes()->orderBy('created_at', 'desc')->paginate(10);
-            
-            $data = [
-                'user' => $user,
-                'recipes' => $recipes,
-            ];
-        }
-        
-        return view('/', $data);
     }
 
     /**
@@ -83,14 +72,24 @@ class RecipesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // getでrecipes/idにアクセスされた場合の「取得表示処理」
+    // getでrecipes/idにアクセスされた場合の「取得表示処理」詳細ページ
     public function show($id)
     {
+        $user = User::find($id);
         $recipe = Recipe::find($id);
-    
-        return view('recipes.show',[
+        
+        // if ('id' === $recipe->user_id) {
+        //     return redirect('/');
+        // }
+        
+        $data = [
+            'user' =>$user,
             'recipe' => $recipe,
-        ]);
+        ];
+
+        // $data += $this->counts($user); 
+        
+        return view('recipes.show', $data);
     }
 
     /**
@@ -102,10 +101,10 @@ class RecipesController extends Controller
     // getでrecipes/id/editにアクセスされた場合の「更新画面表示処理」
     public function edit($id)
     {
-        if (\Auth::id() === $recipe->user_id) {
+        $recipe=Recipe::find($id);
+        if (\Auth::id() !== $recipe->user_id) {
             return redirect('/');
         }
-        
             
         $recipe = Recipe::find($id);
         
@@ -158,21 +157,6 @@ class RecipesController extends Controller
         }
         
         return redirect('/');
-    }
-    
-    public function favorites($id)
-    {
-        $user = User::find($id);
-        $favorites = $user->favorites()->paginate(10);
-
-        $data = [
-            'user' => $user,
-            'recipes' => $favorites,
-        ];
-
-        $data += $this->counts($user);
-
-        return view('recipes.favorites', $data);
     }
     
 }
